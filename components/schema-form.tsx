@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 type File = {
   content: string
@@ -128,6 +129,42 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, (value: T) => vo
   return [storedValue, setValue];
 };
 
+const ImportDialog: React.FC<{ onImport: (data: Schema) => void }> = ({ onImport }) => {
+  const [importData, setImportData] = useState('')
+
+  const handleImport = () => {
+    try {
+      const parsedData = JSON.parse(importData) as Schema
+      onImport(parsedData)
+    } catch (error) {
+      console.error("Invalid JSON data", error)
+      alert("Invalid JSON data. Please check your input and try again.")
+    }
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Import JSON</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Import JSON</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <Textarea
+            placeholder="Paste your JSON here"
+            value={importData}
+            onChange={(e) => setImportData(e.target.value)}
+            className="h-[200px]"
+          />
+        </div>
+        <Button onClick={handleImport}>Import</Button>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 export function SchemaFormComponent() {
   const [isClient, setIsClient] = useState(false)
   const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', {
@@ -160,7 +197,7 @@ export function SchemaFormComponent() {
   };
 
   const handleReset = () => {
-    reset({
+    const defaultSchema = {
       name: '',
       type: 'registry:block',
       registryDependencies: [],
@@ -171,19 +208,14 @@ export function SchemaFormComponent() {
       },
       cssVars: {},
       files: []
-    });
-    setSchema({
-      name: '',
-      type: 'registry:block',
-      registryDependencies: [],
-      dependencies: [],
-      devDependencies: [],
-      tailwind: {
-        config: {}
-      },
-      cssVars: {},
-      files: []
-    });
+    };
+    reset(defaultSchema);
+    setSchema(defaultSchema);
+  };
+
+  const handleImport = (importedData: Schema) => {
+    reset(importedData);
+    setSchema(importedData);
   };
 
   const addFile = () => {
@@ -206,7 +238,7 @@ export function SchemaFormComponent() {
   };
 
   if (!isClient) {
-    return <div className='text-center'>Loading...</div>; // or any loading indicator
+    return <div className='text-center'>Loading...</div>;
   }
 
   return (
@@ -355,7 +387,7 @@ export function SchemaFormComponent() {
                             newFiles[index].content = e.target.value;
                             field.onChange(newFiles);
                           }}
-                          className="mb-2"
+                          className="mb-2 min-h-[200px]"
                         />
                         <Input
                           placeholder="Target (Optional)"
@@ -378,6 +410,7 @@ export function SchemaFormComponent() {
             <div className="flex space-x-2">
               <Button type="submit">Submit</Button>
               <Button type="button" onClick={handleReset} variant="outline">Reset</Button>
+              <ImportDialog onImport={handleImport} />
             </div>
           </form>
         </CardContent>
