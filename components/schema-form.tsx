@@ -297,7 +297,7 @@ export function SchemaFormComponent() {
   }
 
   return (
-    <div className="container mx-auto p-4 flex justify-between flex-col md:flex-row gap-4">
+    <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card className="mb-4 border-none shadow-none flex-grow max-w-2xl">
         <CardHeader>
           <CardTitle>Schema Form</CardTitle>
