@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,8 +10,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useDropzone } from 'react-dropzone'
 
-type File = {
+type FormFile = {
   content: string
   type: string
   target: string
@@ -28,7 +29,7 @@ type Schema = {
     config: Record<string, unknown>
   }
   cssVars: Record<string, unknown>
-  files: File[]
+  files: FormFile[]
 }
 
 const typeOptions = [
@@ -165,6 +166,48 @@ const ImportDialog: React.FC<{ onImport: (data: Schema) => void }> = ({ onImport
   )
 }
 
+const FileDropZone: React.FC<{ onFilesAdded: (files: FormFile[]) => void }> = ({ onFilesAdded }) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const formFiles: FormFile[] = [];
+    let filesProcessed = 0;
+
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        formFiles.push({
+          path: file.name,
+          content: e.target?.result as string,
+          type: '',
+          target: ''
+        });
+
+        filesProcessed++;
+        if (filesProcessed === acceptedFiles.length) {
+          onFilesAdded(formFiles);
+        }
+      };
+      reader.readAsText(file);
+    });
+  }, [onFilesAdded]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  return (
+    <div
+      {...getRootProps()}
+      className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragActive ? 'border-primary bg-primary/10' : 'border-gray-300'
+        }`}
+    >
+      <input {...getInputProps()} />
+      {isDragActive ? (
+        <p>Drop the files here ...</p>
+      ) : (
+        <p>Drag 'n' drop some files here, or click to select files</p>
+      )}
+    </div>
+  )
+}
+
 export function SchemaFormComponent() {
   const [isClient, setIsClient] = useState(false)
   const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', {
@@ -236,6 +279,18 @@ export function SchemaFormComponent() {
     };
     return JSON.stringify(output, null, 2);
   };
+
+  const handleFilesAdded = useCallback((newFiles: FormFile[]) => {
+    setValue('files', [
+      ...schema.files,
+      ...newFiles.map(file => ({
+        path: file.path,
+        content: file.content,
+        type: '',
+        target: ''
+      }))
+    ]);
+  }, [schema.files, setValue]);
 
   if (!isClient) {
     return <div className='text-center'>Loading...</div>;
@@ -343,6 +398,7 @@ export function SchemaFormComponent() {
             </div>
             <div>
               <Label className='mr-2'>Files</Label>
+              <FileDropZone onFilesAdded={handleFilesAdded} />
               <Controller
                 name="files"
                 control={control}
@@ -415,7 +471,7 @@ export function SchemaFormComponent() {
           </form>
         </CardContent>
       </Card>
-      <Card className='h-fit flex-1 overflow-x-scroll'>
+      <Card className='h-fit flex-grow overflow-x-scroll'>
         <CardHeader>
           <CardTitle>JSON Output</CardTitle>
         </CardHeader>

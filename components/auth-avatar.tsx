@@ -15,22 +15,22 @@ export async function AuthAvatar() {
     }
 
     return (
-            <DropdownMenu>
-                <DropdownMenuTrigger>
-                    <Avatar>
-                        {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-                        <AvatarFallback className="bg-secondary p-2 rounded-full">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className=" w-40">
-                    <DropdownMenuItem>
-                        
-                        {/* <form action={logout} className="w-full">
-                            <Button type="submit" className="w-full" variant={"ghost"}>Logout</Button>
-                        </form> */}
-                        <Link href="/logout">Logout</Link>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <Avatar>
+                    {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                    <AvatarFallback className="bg-secondary p-2 rounded-full">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className=" w-40">
+                <DropdownMenuItem>
+
+                    <form action={logout} className="w-full">
+                        <button type="submit" className="w-full">Logout</button>
+                    </form>
+                    {/* <a href="/api/logout">Logout</a> */}
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

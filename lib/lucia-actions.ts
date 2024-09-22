@@ -184,5 +184,5 @@ export async function logout() {
 
     const sessionCookie = lucia.createBlankSessionCookie();
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    return
+    redirect("/login")
 }
