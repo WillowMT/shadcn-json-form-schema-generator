@@ -242,8 +242,8 @@ export function SchemaFormComponent() {
   }
 
   return (
-    <div className="container mx-auto p-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-      <Card className="mb-4">
+    <div className="container mx-auto p-4 flex justify-between flex-col md:flex-row gap-4">
+      <Card className="mb-4 border-none shadow-none flex-grow max-w-2xl">
         <CardHeader>
           <CardTitle>Schema Form</CardTitle>
         </CardHeader>
@@ -409,18 +409,18 @@ export function SchemaFormComponent() {
             </div>
             <div className="flex space-x-2">
               <Button type="submit">Submit</Button>
-              <Button type="button" onClick={handleReset} variant="outline">Reset</Button>
+              <Button type="button" onClick={handleReset} variant="destructive">Reset</Button>
               <ImportDialog onImport={handleImport} />
             </div>
           </form>
         </CardContent>
       </Card>
-      <Card className='h-fit'>
+      <Card className='h-fit flex-1'>
         <CardHeader>
           <CardTitle>JSON Output</CardTitle>
         </CardHeader>
         <CardContent>
-          <pre className=" p-4 rounded-md overflow-auto">
+          <pre className=" p-4 rounded-md overflow-auto text-sm">
             {getJsonOutput()}
           </pre>
         </CardContent>

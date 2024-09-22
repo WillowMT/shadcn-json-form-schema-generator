@@ -1,28 +1,17 @@
-import { sql } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { db } from "./db";
 
-export const usersTable = sqliteTable('users', {
-    id: integer('id').primaryKey(),
-    name: text('name').notNull(),
-    age: integer('age').notNull(),
-    email: text('email').unique().notNull(),
+const userTable = sqliteTable("user", {
+    id: text("id").primaryKey()
 });
 
-export const postsTable = sqliteTable('posts', {
-    id: integer('id').primaryKey(),
-    title: text('title').notNull(),
-    content: text('content').notNull(),
-    userId: integer('user_id')
+const sessionTable = sqliteTable("session", {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
         .notNull()
-        .references(() => usersTable.id, { onDelete: 'cascade' }),
-    createdAt: text('created_at')
-        .default(sql`(CURRENT_TIMESTAMP)`)
-        .notNull(),
-    updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date()),
+        .references(() => userTable.id),
+    expiresAt: integer("expires_at").notNull()
 });
 
-export type InsertUser = typeof usersTable.$inferInsert;
-export type SelectUser = typeof usersTable.$inferSelect;
-
-export type InsertPost = typeof postsTable.$inferInsert;
-export type SelectPost = typeof postsTable.$inferSelect;
+const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);

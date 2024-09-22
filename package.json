@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
+    "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@prisma/adapter-libsql": "^5.19.1",
     "@radix-ui/react-avatar": "^1.1.0",
