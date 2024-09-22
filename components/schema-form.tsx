@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X } from 'lucide-react'
 
+
 type File = {
   content: string
   type: string
@@ -278,8 +279,8 @@ export function SchemaFormComponent() {
           <CardTitle>JSON Output</CardTitle>
         </CardHeader>
         <CardContent>
-          <pre className="bg-gray-100 dark:bg-slate-800 p-4 rounded-md overflow-auto">
-            {getJsonOutput()}
+          <pre className=" p-4 rounded-md overflow-auto">
+              {getJsonOutput()}
           </pre>
         </CardContent>
         <CardFooter>
