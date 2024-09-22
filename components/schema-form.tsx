@@ -415,7 +415,7 @@ export function SchemaFormComponent() {
           </form>
         </CardContent>
       </Card>
-      <Card className='h-fit flex-1'>
+      <Card className='h-fit flex-1 overflow-x-scroll'>
         <CardHeader>
           <CardTitle>JSON Output</CardTitle>
         </CardHeader>
