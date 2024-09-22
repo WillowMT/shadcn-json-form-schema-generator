@@ -268,7 +268,7 @@ export function SchemaFormComponent() {
                   <Button className='mt-2' onClick={(e) => removeFile(index, e)} variant="destructive" size={"sm"}>Remove File</Button>
                 </Card>
               ))}
-              <Button onClick={addFile} className="mt-2 border-black" variant={"outline"}>Add File</Button>
+              <Button onClick={addFile} className="mt-2 border-black dark:border-white" variant={"outline"}>Add File</Button>
             </div>
             {/* <Button type="submit">Submit</Button> */}
           </form>
