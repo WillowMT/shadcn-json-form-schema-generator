@@ -1,6 +1,8 @@
 import { config } from 'dotenv';
 import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
+import { DrizzleSQLiteAdapter } from '@lucia-auth/adapter-drizzle';
+import { sessionTable, userTable } from './schema';
 
 config({ path: '.env' }); // or .env.local
 
@@ -10,3 +12,4 @@ const client = createClient({
 });
 
 export const db = drizzle(client);
+export const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);

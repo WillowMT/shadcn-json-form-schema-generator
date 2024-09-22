@@ -1,17 +1,16 @@
-import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { db } from "./db";
 
-const userTable = sqliteTable("user", {
-    id: text("id").primaryKey()
+export const userTable = sqliteTable("user", {
+    id: text("id").primaryKey(),
+    username: text("username").notNull(),
+    password: text("password").notNull()
 });
 
-const sessionTable = sqliteTable("session", {
+export const sessionTable = sqliteTable("session", {
     id: text("id").primaryKey(),
     userId: text("user_id")
         .notNull()
-        .references(() => userTable.id),
+        .references(() => userTable.id, { onDelete: "cascade" }),
     expiresAt: integer("expires_at").notNull()
 });
 
-const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);

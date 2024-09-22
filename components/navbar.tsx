@@ -8,6 +8,7 @@ import {
 import { Menu } from "lucide-react";
 import { ModeToggle } from './theme-toggle';
 import Link from 'next/link';
+import { AuthAvatar } from './auth-avatar';
 
 const Navbar = () => {
     const navItems = [
@@ -29,9 +30,7 @@ const Navbar = () => {
                             <a href={item.href}>{item.name}</a>
                         </Button>
                     ))}
-                    <Link href={"/login"}>
-                        <Button>Login</Button>
-                    </Link>
+                    <AuthAvatar />
                     <ModeToggle />
                 </div>
 
