@@ -1,8 +1,8 @@
 import { getOnePost } from "@/lib/service"
 
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url)
-    const path = searchParams.get('path')
+export async function GET(req: Request, { params }: { params: { slug: string } }) {
+    const { slug } = params
+    const path = slug
 
     if (!path) {
         return new Response('Missing path', { status: 400 })

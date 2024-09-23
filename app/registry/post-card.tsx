@@ -45,7 +45,7 @@ export const PostCard = ({ post }: { post: any }) => {
                     <Clipboard className="mr-2 h-4 w-4" />
                     Copy
                 </Button>
-                <Link href={`/api/raw?path=${post.id}`} target='_blank'>
+                <Link href={`/api/raw/${post.id}`} target='_blank'>
                     <Button variant="outline">
                         <LinkIcon className="mr-2 h-4 w-4" />
                         View
