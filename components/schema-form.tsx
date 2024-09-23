@@ -342,7 +342,7 @@ export function SchemaFormComponent() {
               <Controller
                 name="name"
                 control={control}
-                render={({ field }) => <Input {...field} />}
+                render={({ field }) => <Input {...field} required />}
               />
             </div>
             <div>
