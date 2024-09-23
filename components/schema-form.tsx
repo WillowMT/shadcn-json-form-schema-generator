@@ -12,6 +12,7 @@ import { X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useDropzone } from 'react-dropzone'
 import { createPostAction } from '@/lib/service.actions'
+import { useToast } from '@/hooks/use-toast'
 
 type FormFile = {
   content: string
@@ -229,7 +230,7 @@ export function SchemaFormComponent() {
   });
 
   const [copy, setCopy] = useState(false);
-
+  const { toast } = useToast()
   useEffect(() => {
     setIsClient(true)
     reset(schema);
@@ -320,7 +321,7 @@ export function SchemaFormComponent() {
       ...Array.from(new Set([...schema.registryDependencies, ...newRegistryDependencies]))
     ]);
 
-  }, [schema.files,schema.dependencies, setValue]);
+  }, [schema.files, schema.dependencies, setValue]);
 
   if (!isClient) {
     return <div className='text-center'>Loading...</div>;
@@ -512,7 +513,22 @@ export function SchemaFormComponent() {
         </CardContent>
         <CardFooter className='flex flex-col gap-2'>
           <Button className='w-full' onClick={() => { setCopy(true); navigator.clipboard.writeText(getJsonOutput()) }}>{copy ? "Copied!" : "Copy JSON"}</Button>
-          <form action={createPostAction} className='w-full'>
+          <form action={async (formData) => {
+            try {
+              await createPostAction(formData)
+              toast({
+                title: "Post created",
+                description: "Your post has been created",
+                variant: "default"
+              })
+            } catch (error) {
+              toast({
+                title: "Error",
+                description: (error as Error).message,
+                variant: "destructive"
+              })
+            }
+          }} className='w-full'>
             <input hidden type="text" name="title" value={schema.name} />
             <input hidden type="text" name="content" value={JSON.stringify(schema)} />
             <Button className='w-full' type="submit" variant={"outline"}>Create Post</Button>
