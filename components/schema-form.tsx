@@ -290,7 +290,36 @@ export function SchemaFormComponent() {
         target: ''
       }))
     ]);
-  }, [schema.files, setValue]);
+
+    // Extract dependencies from file contents
+    const newDependencies = newFiles.flatMap(file => {
+      const importMatches = file.content.match(/from\s+['"]([^'"]+)['"]/g) || [];
+      return importMatches
+        .map(match => match.replace(/from\s+['"]|['"]/g, ''))
+        .filter(dep => !dep.startsWith('@/components/ui/'));
+    });
+
+    // Add new dependencies to the schema
+    setValue('dependencies', [
+      ...Array.from(new Set([...schema.dependencies, ...newDependencies]))
+    ]);
+
+    // extract registry dependencies from file contents that start with @/components/ui
+    // remove the @/components/ui/ part
+    const newRegistryDependencies = newFiles.flatMap(file => {
+      const importMatches = file.content.match(/from\s+['"]@\/components\/ui\/([^'"]+)['"]/g) || [];
+      return importMatches.map(match => {
+        const component = match.match(/@\/components\/ui\/([^'"]+)/)?.[1];
+        return component || '';
+      }).filter(Boolean);
+    });
+
+    // Add new registry dependencies to the schema
+    setValue('registryDependencies', [
+      ...Array.from(new Set([...schema.registryDependencies, ...newRegistryDependencies]))
+    ]);
+
+  }, [schema.files,schema.dependencies, setValue]);
 
   if (!isClient) {
     return <div className='text-center'>Loading...</div>;
