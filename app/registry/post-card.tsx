@@ -35,7 +35,7 @@ export const PostCard = ({ post }: { post: any }) => {
                         <CardTitle>{post.title}</CardTitle>
                         <CardDescription>
                             <span className=' inline-flex items-center'>
-                                {post.authorName} <Dot /> {new Date(post.createdAt).toLocaleDateString()}
+                                {post.authorName} {post.authorName && <Dot />} {new Date(post.createdAt).toLocaleDateString()}
                             </span>
                         </CardDescription>
                     </CardHeader>

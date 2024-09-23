@@ -9,19 +9,21 @@ import { Menu } from "lucide-react";
 import { ModeToggle } from './theme-toggle';
 import Link from 'next/link';
 import { AuthAvatar } from './auth-avatar';
+import { validateRequest } from '@/lib/lucia';
 
-const Navbar = () => {
+const Navbar = async () => {
     const navItems = [
         { name: 'Home', href: '/' },
         { name: 'Registry', href: '/registry' },
-        { name: 'My Posts', href: '/me' },
         // { name: 'Contact', href: '/contact' }
     ];
+
+    const { user } = await validateRequest();
 
     return (
         <nav className=" p-4">
             <div className="container mx-auto flex justify-between items-center">
-                <a href="/" className=" font-bold text-xl">Logo</a>
+                <a href="/" className=" font-bold text-xl">Scn-Registry</a>
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex space-x-4">
@@ -30,6 +32,11 @@ const Navbar = () => {
                             <a href={item.href}>{item.name}</a>
                         </Button>
                     ))}
+                    {user && (
+                        <Button variant="ghost" className="" asChild>
+                            <a href="/me">My Posts</a>
+                        </Button>
+                    )}
                     <AuthAvatar />
                     <ModeToggle />
                 </div>
