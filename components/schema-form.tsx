@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useDropzone } from 'react-dropzone'
+import { createPostAction } from '@/lib/service.actions'
 
 type FormFile = {
   content: string
@@ -195,7 +196,7 @@ const FileDropZone: React.FC<{ onFilesAdded: (files: FormFile[]) => void }> = ({
   return (
     <div
       {...getRootProps()}
-      className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragActive ? 'border-primary bg-primary/10' : 'border-gray-300'
+      className={`mb-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragActive ? 'border-primary bg-primary/10' : 'border-gray-300'
         }`}
     >
       <input {...getInputProps()} />
@@ -509,8 +510,13 @@ export function SchemaFormComponent() {
             {getJsonOutput()}
           </pre>
         </CardContent>
-        <CardFooter>
+        <CardFooter className='flex flex-col gap-2'>
           <Button className='w-full' onClick={() => { setCopy(true); navigator.clipboard.writeText(getJsonOutput()) }}>{copy ? "Copied!" : "Copy JSON"}</Button>
+          <form action={createPostAction} className='w-full'>
+            <input hidden type="text" name="title" value={schema.name} />
+            <input hidden type="text" name="content" value={JSON.stringify(schema)} />
+            <Button className='w-full' type="submit" variant={"outline"}>Create Post</Button>
+          </form>
         </CardFooter>
       </Card>
     </div>
