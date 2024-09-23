@@ -300,7 +300,7 @@ export function SchemaFormComponent() {
       const importMatches = file.content.match(/from\s+['"]([^'"]+)['"]/g) || [];
       return importMatches
         .map(match => match.replace(/from\s+['"]|['"]/g, ''))
-        .filter(dep => !dep.startsWith('@/') && !dep.startsWith('./'));
+        .filter(dep => !dep.startsWith('@/') && !dep.startsWith('./') && !dep.startsWith('next/'));
     });
 
     // Add new dependencies to the schema
