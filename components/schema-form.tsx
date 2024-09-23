@@ -211,10 +211,10 @@ const FileDropZone: React.FC<{ onFilesAdded: (files: FormFile[]) => void }> = ({
   )
 }
 
-export function SchemaFormComponent() {
+export function SchemaFormComponent({ initialSchema }: { initialSchema?: Schema }) {
   const [isClient, setIsClient] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', {
+  const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', initialSchema || {
     name: '',
     type: 'registry:block',
     registryDependencies: [],
@@ -526,7 +526,7 @@ export function SchemaFormComponent() {
               setSubmitted(true)
             } catch (error) {
               console.log(error);
-              
+
               toast({
                 title: "Error",
                 description: (error instanceof UnauthorizedError) ? "You are not authorized to create a post" : "Failed to create post.",

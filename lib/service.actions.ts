@@ -18,7 +18,16 @@ export async function createPostAction(formData: FormData) {
     if (!formData.get('title') || !formData.get('content')) {
         throw new Error('Missing title or content')
     }
-    return createPost(user.id, formData.get('title') as string, formData.get('content') as string)
+
+    const content = formData.get('content') as string
+    const contentJson = JSON.parse(content)
+
+    const xssPattern = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+    if (xssPattern.test(content)) {
+        throw new Error('Content contains potential XSS injection');
+    }
+    
+    return createPost(user.id, formData.get('title') as string, contentJson)
 }
 
 export async function getOnePostAction(id: string) {

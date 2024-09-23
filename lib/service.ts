@@ -30,8 +30,19 @@ export async function getOwnPost(userId: string) {
 
 // get all published post order by createdAt desc
 export async function getAllPublishedPost() {
-    return db.select().from(postTable).where(eq(postTable.published, 1)).orderBy(desc(postTable.createdAt))
+    return db.select({
+        id: postTable.id,
+        title: postTable.title,
+        content: postTable.content,
+        createdAt: postTable.createdAt,
+        authorName: userTable.username
+    })
+        .from(postTable)
+        .leftJoin(userTable, eq(postTable.userId, userTable.id))
+        .where(eq(postTable.published, 1))
+        .orderBy(desc(postTable.createdAt))
 }
+
 
 // user update post
 export async function updatePost(id: string, title: string, content: string, userId: string) {
