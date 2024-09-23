@@ -20,7 +20,7 @@ export const PostCard = ({ post }: { post: any }) => {
     }
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(JSON.stringify(post, null, 2))
+        navigator.clipboard.writeText(post.content)
         toast({
             title: "Copied to clipboard",
             description: "The post content has been copied to your clipboard.",
