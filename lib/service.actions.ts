@@ -1,12 +1,14 @@
 'use server'
 
+import { UnauthorizedError } from "./error";
 import { validateRequest } from "./lucia";
 import { createPost, getOnePost, updatePost, deletePost, likePost, publishPost, unpublishPost, unlikePost } from "./service";
+
 
 async function checkAuth() {
     const result = await validateRequest()
     if (!result.user) {
-        throw new Error('Unauthorized')
+        throw new UnauthorizedError("Unauthorized")
     }
     return result.user
 }

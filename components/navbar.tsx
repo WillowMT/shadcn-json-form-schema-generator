@@ -13,9 +13,9 @@ import { AuthAvatar } from './auth-avatar';
 const Navbar = () => {
     const navItems = [
         { name: 'Home', href: '/' },
-        { name: 'About', href: '/about' },
-        { name: 'Services', href: '/services' },
-        { name: 'Contact', href: '/contact' }
+        { name: 'Registry', href: '/registry' },
+        // { name: 'Services', href: '/services' },
+        // { name: 'Contact', href: '/contact' }
     ];
 
     return (

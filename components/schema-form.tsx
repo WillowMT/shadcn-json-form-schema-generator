@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useDropzone } from 'react-dropzone'
 import { createPostAction } from '@/lib/service.actions'
 import { useToast } from '@/hooks/use-toast'
+import { UnauthorizedError } from '@/lib/error'
 
 type FormFile = {
   content: string
@@ -212,6 +213,7 @@ const FileDropZone: React.FC<{ onFilesAdded: (files: FormFile[]) => void }> = ({
 
 export function SchemaFormComponent() {
   const [isClient, setIsClient] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', {
     name: '',
     type: 'registry:block',
@@ -288,7 +290,7 @@ export function SchemaFormComponent() {
       ...newFiles.map(file => ({
         path: file.path,
         content: file.content,
-        type: '',
+        type: file.path.endsWith('.tsx') ? 'registry:component' : file.path.endsWith('.ts') ? 'registry:lib' : '',
         target: ''
       }))
     ]);
@@ -298,7 +300,7 @@ export function SchemaFormComponent() {
       const importMatches = file.content.match(/from\s+['"]([^'"]+)['"]/g) || [];
       return importMatches
         .map(match => match.replace(/from\s+['"]|['"]/g, ''))
-        .filter(dep => !dep.startsWith('@/components/ui/'));
+        .filter(dep => !dep.startsWith('@/') && !dep.startsWith('./'));
     });
 
     // Add new dependencies to the schema
@@ -521,17 +523,20 @@ export function SchemaFormComponent() {
                 description: "Your post has been created",
                 variant: "default"
               })
+              setSubmitted(true)
             } catch (error) {
+              console.log(error);
+              
               toast({
                 title: "Error",
-                description: "There was an error creating your post",
+                description: (error instanceof UnauthorizedError) ? "You are not authorized to create a post" : "Failed to create post.",
                 variant: "destructive"
               })
             }
           }} className='w-full'>
             <input hidden type="text" name="title" value={schema.name} />
-            <input hidden type="text" name="content" value={JSON.stringify(schema)} />
-            <Button className='w-full' type="submit" variant={"outline"}>Create Post</Button>
+            <input hidden type="text" name="content" value={getJsonOutput()} />
+            <Button className='w-full' type="submit" variant={"outline"} disabled={submitted}>{submitted ? "Submitted!" : "Create Post"}</Button>
           </form>
         </CardFooter>
       </Card>

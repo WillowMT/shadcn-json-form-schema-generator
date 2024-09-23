@@ -13,7 +13,8 @@ export async function createPost(userId: string, title: string, content: string)
         userId,
         title,
         content,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        published: 1
     }).returning()
 }
 
