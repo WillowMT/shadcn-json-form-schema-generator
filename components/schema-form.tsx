@@ -524,7 +524,7 @@ export function SchemaFormComponent() {
             } catch (error) {
               toast({
                 title: "Error",
-                description: (error as Error).message,
+                description: "There was an error creating your post",
                 variant: "destructive"
               })
             }
