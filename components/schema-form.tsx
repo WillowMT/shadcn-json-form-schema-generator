@@ -14,6 +14,7 @@ import { useDropzone } from 'react-dropzone'
 import { createPostAction } from '@/lib/service.actions'
 import { useToast } from '@/hooks/use-toast'
 import { UnauthorizedError } from '@/lib/error'
+import { useFormStatus } from "react-dom";
 
 type FormFile = {
   content: string
@@ -211,9 +212,30 @@ const FileDropZone: React.FC<{ onFilesAdded: (files: FormFile[]) => void }> = ({
   )
 }
 
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (!pending && submitted) {
+      setSubmitted(false);
+    }
+  }, [pending, submitted]);
+
+  return (
+    <Button 
+      className='w-full' 
+      type="submit" 
+      variant={"outline"} 
+      disabled={pending || submitted}
+    >
+      {pending ? "Submitting..." : submitted ? "Submitted!" : "Create Post"}
+    </Button>
+  );
+};
+
 export function SchemaFormComponent({ initialSchema }: { initialSchema?: Schema }) {
   const [isClient, setIsClient] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
   const [schema, setSchema] = useLocalStorage<Schema>('schemaFormData', initialSchema || {
     name: '',
     type: 'registry:block',
@@ -516,27 +538,24 @@ export function SchemaFormComponent({ initialSchema }: { initialSchema?: Schema 
         <CardFooter className='flex flex-col gap-2'>
           <Button className='w-full' onClick={() => { setCopy(true); navigator.clipboard.writeText(getJsonOutput()) }}>{copy ? "Copied!" : "Copy JSON"}</Button>
           <form action={async (formData) => {
-            try {
-              await createPostAction(formData)
-              toast({
-                title: "Post created",
-                description: "Your post has been created",
-                variant: "default"
-              })
-              setSubmitted(true)
-            } catch (error) {
-              console.log(error);
-
+            const resp = await createPostAction(formData) as any
+            if (resp.error) {
               toast({
                 title: "Error",
-                description: (error instanceof UnauthorizedError) ? "You are not authorized to create a post" : "Failed to create post.",
+                description: resp.error,
                 variant: "destructive"
               })
+              return;
             }
+            toast({
+              title: "Post created",
+              description: "Your post has been created",
+              variant: "default"
+            })
           }} className='w-full'>
             <input hidden type="text" name="title" value={schema.name} />
             <input hidden type="text" name="content" value={getJsonOutput()} />
-            <Button className='w-full' type="submit" variant={"outline"} disabled={submitted}>{submitted ? "Submitted!" : "Create Post"}</Button>
+            <SubmitButton />
           </form>
         </CardFooter>
       </Card>
