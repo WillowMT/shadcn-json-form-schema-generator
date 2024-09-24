@@ -8,3 +8,8 @@ export default function Home() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Shadcn Registry Schema Generator",
+  description: "Generate schema for Shadcn Registry",
+};
