@@ -23,4 +23,4 @@ export default async function MePage() {
     );
 }
 
-export const revalidate = 1
+export const revalidate = 3
