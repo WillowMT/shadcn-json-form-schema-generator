@@ -5,3 +5,8 @@ export default function SignupPage() {
         <SignupForm />
     </div>
 }
+
+export const metadata = {
+    title: "Signup",
+    description: "Signup to your account",
+}

@@ -16,3 +16,9 @@ export default async function RegistryPage() {
         </div>
     </div>
 }
+
+
+export const metadata = {
+    title: "Registry",
+    description: "Explore what others have created",
+}

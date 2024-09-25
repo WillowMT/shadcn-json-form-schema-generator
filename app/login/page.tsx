@@ -7,3 +7,8 @@ export default function Page() {
     </div>
   )
 }
+
+export const metadata = {
+    title: "Login",
+    description: "Login to your account",
+}

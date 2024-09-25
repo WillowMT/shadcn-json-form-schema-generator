@@ -24,3 +24,8 @@ export default async function MePage() {
 }
 
 export const revalidate = 3
+
+export const metadata = {
+    title: "My Posts",
+    description: "View your own posts",
+}
