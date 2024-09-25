@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { deletePostAction } from '@/lib/service.actions'
 import { useRouter } from 'next/navigation'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-export const PostCard = ({ post }: { post: any }) => {
+export const PostCard = ({ post, isOwner }: { post: any, isOwner?: boolean }) => {
     const [liked, setLiked] = useState(false)
     const { toast } = useToast()
     const { user, isLoading } = useAuth()
@@ -130,7 +130,7 @@ export const PostCard = ({ post }: { post: any }) => {
                     Raw
                 </Button>
                 {
-                    user?.username === post.authorName && (
+                    isOwner && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant="destructive" className='w-full mt-2'>
