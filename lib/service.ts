@@ -32,6 +32,7 @@ export async function getOwnPost(userId: string) {
         createdAt: postTable.createdAt,
         authorName: userTable.username
     }).from(postTable).where(eq(postTable.userId, userId)).leftJoin(userTable, eq(postTable.userId, userTable.id))
+        .orderBy(desc(postTable.createdAt))
 }
 
 // get all published post order by createdAt desc
