@@ -25,7 +25,13 @@ export async function getOnePost(id: string) {
 
 // user get own post
 export async function getOwnPost(userId: string) {
-    return db.select().from(postTable).where(eq(postTable.userId, userId))
+    return db.select({
+        id: postTable.id,
+        title: postTable.title,
+        content: postTable.content,
+        createdAt: postTable.createdAt,
+        authorName: userTable.username
+    }).from(postTable).where(eq(postTable.userId, userId)).leftJoin(userTable, eq(postTable.userId, userTable.id))
 }
 
 // get all published post order by createdAt desc

@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from "next/cache";
 import { UnauthorizedError } from "./error";
 import { validateRequest } from "./lucia";
 import { createPost, getOnePost, updatePost, deletePost, likePost, publishPost, unpublishPost, unlikePost } from "./service";
@@ -17,7 +18,7 @@ export async function createPostAction(formData: FormData) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     if (!formData.get('title') || !formData.get('content')) {
@@ -46,7 +47,7 @@ export async function updatePostAction(id: string, title: string, content: strin
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     return updatePost(id, title, content, user.id)
@@ -56,17 +57,19 @@ export async function deletePostAction(id: string) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
-    return deletePost(id, user.id)
+    await deletePost(id, user.id)
+    revalidatePath('/me','page')
+    return true
 }
 
 export async function likePostAction(userId: string, postId: string) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     return likePost(userId, postId)
@@ -76,7 +79,7 @@ export async function publishPostAction(id: string) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     return publishPost(id, user.id)
@@ -86,7 +89,7 @@ export async function unpublishPostAction(id: string) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     return unpublishPost(id, user.id)
@@ -96,7 +99,7 @@ export async function unlikePostAction(userId: string, postId: string) {
     const user = await checkAuth()
     if (!user) {
         return {
-            error: "Unauthorized"
+            error: "User needs to be logged in."
         }
     }
     return unlikePost(userId, postId)

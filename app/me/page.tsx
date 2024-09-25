@@ -22,3 +22,5 @@ export default async function MePage() {
         </div>
     );
 }
+
+export const revalidate = 1
