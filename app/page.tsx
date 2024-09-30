@@ -1,5 +1,6 @@
 import { SchemaFormComponent } from "@/components/schema-form";
 
+
 export default function Home() {
   return (
     <div>
